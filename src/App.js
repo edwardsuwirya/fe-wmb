@@ -8,7 +8,7 @@ class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            logged: true
+            logged: false
         }
         this.loginService = loginService();
         this.login = this.login.bind(this);
