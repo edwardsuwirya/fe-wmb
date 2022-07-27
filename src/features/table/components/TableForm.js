@@ -71,8 +71,20 @@ class TableForm extends Component {
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Nomor Meja</Form.Label>
-                                <Form.Control type="text" placeholder="Masukan Status"
-                                              onChange={this.handleChangeStatus}/>
+                                <Form.Check
+                                    type='radio'
+                                    name="status"
+                                    label='Available'
+                                    value='A'
+                                    onChange={this.handleChangeStatus}
+                                />
+                                <Form.Check
+                                    type='radio'
+                                    name="status"
+                                    label='Unavailable'
+                                    value='U'
+                                    onChange={this.handleChangeStatus}
+                                />
                             </Form.Group>
                             <div>
                                 <Button className={"w-25 m-1"} variant="warning" type="button"

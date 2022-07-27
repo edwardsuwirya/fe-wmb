@@ -2,7 +2,7 @@ import {Component} from "react";
 import "./Login.css";
 import {EMAIL_REGEX} from "../../../shared/constants";
 import {userCredential} from "../../../model/userCredential";
-import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Card, Col, Container, FloatingLabel, Form, Row} from "react-bootstrap";
 
 class LoginView extends Component {
     constructor(props) {
@@ -78,22 +78,25 @@ class LoginView extends Component {
                     <Row>
                         <Col sm={2} lg={8}></Col>
                         <Col sm={1} lg={4}>
-                            <Card style={{width: '32rem',backgroundColor:'whitesmoke',borderRadius:'15px'}} className="p-3">
+                            <Card style={{width: '32rem', backgroundColor: 'whitesmoke', borderRadius: '15px'}}
+                                  className="p-3">
                                 <Card.Body>
                                     <Card.Title><h2>Sistem Informasi WMB</h2></Card.Title>
                                     <Form onSubmit={this.handleSubmit}>
-                                        <Form.Group className="mb-3">
-                                            <Form.Label>Email</Form.Label>
-                                            <Form.Control size="lg" type="email" placeholder="Masukan email"
-                                                          onChange={this.handleUsernameChange}/>
+                                        <Form.Group className="form-floating mb-3">
+                                            <FloatingLabel label='Email'>
+                                                <Form.Control size="lg" type="email" placeholder="Masukan email"
+                                                              onChange={this.handleUsernameChange}/>
+                                            </FloatingLabel>
                                             <Form.Text className="text-danger">
                                                 {errorName.email}
                                             </Form.Text>
                                         </Form.Group>
-                                        <Form.Group className="mb-3">
-                                            <Form.Label>Password</Form.Label>
-                                            <Form.Control size="lg" type="password" placeholder="Masukan Password"
-                                                          onChange={this.handlePasswordChange}/>
+                                        <Form.Group className="form-floating mb-3">
+                                            <FloatingLabel label='Password'>
+                                                <Form.Control size="lg" type="password" placeholder="Masukan Password"
+                                                              onChange={this.handlePasswordChange}/>
+                                            </FloatingLabel>
                                             <Form.Text className="text-danger">
                                                 {errorName.password}
                                             </Form.Text>
