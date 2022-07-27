@@ -1,5 +1,8 @@
 import {Component} from "react";
 import {tableService} from "../../../services/tableService";
+import {Badge, Button, Container, Table} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAdd} from "@fortawesome/free-solid-svg-icons";
 
 class TableList extends Component {
     constructor(props) {
@@ -10,14 +13,19 @@ class TableList extends Component {
     render() {
         const tables = this.tableService.showAll();
         return (
-            <div className="container">
-                <button type="button" className="btn btn-primary" onClick={this.props.onNavigateToForm}>Tambah Table
-                </button>
-                <table className="table table-striped">
+            <Container className="p-3">
+                <div className="d-flex justify-content-between">
+                    <h3>Meja</h3>
+                    <Button size="sm" onClick={this.props.onNavigateToForm}>
+                        <FontAwesomeIcon icon={faAdd}/>
+                        <span className={"p-2"}>Tambah Meja</span>
+                    </Button>
+                </div>
+                <Table striped>
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Table Number</th>
+                        <th scope="col">Nomor Meja</th>
                         <th scope="col">Status</th>
                     </tr>
                     </thead>
@@ -27,13 +35,16 @@ class TableList extends Component {
                             return <tr key={table.id}>
                                 <th scope="row">{index + 1}</th>
                                 <td>{table.tableNumber}</td>
-                                <td className={table.status === "Available" ? "text-primary" : "text-warning"}>{table.status}</td>
+                                <td>
+                                    <Badge
+                                        bg={table.status === "A" ? "primary" : "danger"}>{table.status}</Badge>
+                                </td>
                             </tr>
                         })
                     }
                     </tbody>
-                </table>
-            </div>
+                </Table>
+            </Container>
         );
     }
 }

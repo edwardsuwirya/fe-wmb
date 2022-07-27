@@ -1,6 +1,7 @@
 import {Component} from "react";
 import {menuService} from "../../../services/menuService";
 import {menu} from "../../../model/menu";
+import {Button, Card, Container, Form} from "react-bootstrap";
 
 class MenuForm extends Component {
     constructor(props) {
@@ -53,43 +54,39 @@ class MenuForm extends Component {
 
     render() {
         return (
-            <div className="container">
-                <form onSubmit={this.handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="inputId">Id Menu</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputId"
-                            placeholder="Enter Id"
-                            onChange={this.handleChangeId}
-                        />
-                        <label htmlFor="inputName">Name</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputName"
-                            placeholder="Enter Name"
-                            onChange={this.handleChangeName}
-                        />
-                        <label htmlFor="inputPrice">Price</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputPrice"
-                            placeholder="Enter Price"
-                            onChange={this.handleChangePrice}
-                        />
-                    </div>
-                    <br/>
-                    <button type="button" className="btn btn-warning" onClick={this.props.onCancelForm}>
-                        Cancel
-                    </button>
-                    <button disabled={!this.state.isValid} type="submit" className="btn btn-success">
-                        Submit
-                    </button>
-                </form>
-            </div>
+            <Container className="p-2">
+                <Card>
+                    <Card.Body>
+                        <Card.Title>Tambah Menu</Card.Title>
+                        <Form onSubmit={this.handleSubmit}>
+                            <Form.Group className="mb-3">
+                                <Form.Label>ID Menu</Form.Label>
+                                <Form.Control type="text" placeholder="Masukan ID menu"
+                                              onChange={this.handleChangeId}/>
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nama Menu</Form.Label>
+                                <Form.Control type="text" placeholder="Masukan nama menu"
+                                              onChange={this.handleChangeName}/>
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Harga</Form.Label>
+                                <Form.Control type="text" placeholder="Masukan harga menu"
+                                              onChange={this.handleChangePrice}/>
+                            </Form.Group>
+                            <div>
+                                <Button className={"w-25 m-1"} variant="warning" type="button"
+                                        onClick={this.props.onCancelForm}>Batal</Button>
+                                <Button className={"w-25 m-1"} type="submit" variant="primary"
+                                        disabled={!this.state.isValid}>
+                                    Simpan
+                                </Button>
+                            </div>
+                        </Form>
+                    </Card.Body>
+                </Card>
+
+            </Container>
         );
     }
 }

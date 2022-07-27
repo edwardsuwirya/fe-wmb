@@ -2,6 +2,7 @@ import {Component} from "react";
 import "./Login.css";
 import {EMAIL_REGEX} from "../../../shared/constants";
 import {userCredential} from "../../../model/userCredential";
+import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 
 class LoginView extends Component {
     constructor(props) {
@@ -72,55 +73,41 @@ class LoginView extends Component {
     render() {
         const {errorName, isValid} = this.state;
         return (
-            <div className="login main">
-                <form onSubmit={this.handleSubmit}>
-                    <div className="d-flex flex-column login container">
-                        <div className="d-flex align-items-center login containerCenter">
-                            <div className="d-flex justify-content-end login containerEnd">
-                                <div className="card w-50 login backgroundColorCard">
-                                    <div className="card-body">
-                                        <h2 className="login">
-                                            <i className="fas fa-unlock-alt"></i> Login Page
-                                        </h2>
-                                        <br/>
-                                        <div>
-                                            <div className={`form-group`}>
-                                                <label htmlFor="inputUserName">Email</label>
-                                                <input
-                                                    type="email"
-                                                    className="form-control"
-                                                    id="inputUserName"
-                                                    placeholder="Enter email"
-                                                    onChange={this.handleUsernameChange}
-                                                />
-                                                <small className="text-danger">{errorName.email}</small>
-                                            </div>
-                                            <label htmlFor="inputUserPassword">Password</label>
-                                            <input
-                                                type="password"
-                                                className="form-control"
-                                                id="inputUserPassword"
-                                                placeholder="Enter password"
-                                                onChange={this.handlePasswordChange}
-                                            />
-                                            <small className="text-danger">{errorName.password}</small>
+            <div className="login main d-flex flex-column justify-content-center">
+                <Container>
+                    <Row>
+                        <Col sm={2} lg={8}></Col>
+                        <Col sm={1} lg={4}>
+                            <Card style={{width: '32rem',backgroundColor:'whitesmoke',borderRadius:'15px'}} className="p-3">
+                                <Card.Body>
+                                    <Card.Title><h2>Sistem Informasi WMB</h2></Card.Title>
+                                    <Form onSubmit={this.handleSubmit}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Email</Form.Label>
+                                            <Form.Control size="lg" type="email" placeholder="Masukan email"
+                                                          onChange={this.handleUsernameChange}/>
+                                            <Form.Text className="text-danger">
+                                                {errorName.email}
+                                            </Form.Text>
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Password</Form.Label>
+                                            <Form.Control size="lg" type="password" placeholder="Masukan Password"
+                                                          onChange={this.handlePasswordChange}/>
+                                            <Form.Text className="text-danger">
+                                                {errorName.password}
+                                            </Form.Text>
+                                        </Form.Group>
+                                        <div className="d-grid">
+                                            <Button size="lg" variant="primary" type="submit"
+                                                    disabled={!isValid}>Masuk</Button>
                                         </div>
-                                        <br></br>
-                                        <div>
-                                            <button
-                                                type="submit"
-                                                className={`btn btn-primary login inputButtonawesome-button-sm`}
-                                                disabled={!isValid}
-                                            >
-                                                <i className="fas fa-sign-in"></i> Login
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                                    </Form>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         );
     }

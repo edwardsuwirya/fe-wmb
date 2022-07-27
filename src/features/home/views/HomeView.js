@@ -3,6 +3,11 @@ import MenuView from "../../menu/views/MenuView";
 import TableView from "../../table/views/TableView";
 import Dashboard from "../components/dashboard/Dashboard";
 import {APP_TITLE, DASHBOARD_PAGE, MENU_PAGE, TABLE_PAGE} from "../../../shared/constants";
+import {Button, Container, Nav, Navbar} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCopyright} from "@fortawesome/free-regular-svg-icons";
+import {faUtensils} from "@fortawesome/free-solid-svg-icons/faUtensils";
+import {faLock} from "@fortawesome/free-solid-svg-icons/faLock";
 
 class HomeView extends Component {
 
@@ -31,38 +36,38 @@ class HomeView extends Component {
             showMenu = <TableView/>
         }
         return (
-            <>
-                <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                    <div className="container-fluid">
-                        <a className="navbar-brand" onClick={() => this.handleNavigation(DASHBOARD_PAGE)}>{APP_TITLE}</a>
-                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                                aria-label="Toggle navigation">
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
-                        <div className="collapse navbar-collapse" id="navbarNav">
-                            <ul className="navbar-nav">
-                                <li className="nav-item">
-                                    <a className="nav-link active" aria-current="page"
-                                       onClick={() => this.handleNavigation(DASHBOARD_PAGE)}>HomeView</a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" onClick={() => this.handleNavigation(MENU_PAGE)}>Menus</a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" onClick={() => this.handleNavigation(TABLE_PAGE)}>Tables</a>
-                                </li>
-                                <li className="nav-item">
-                                    <button type="button" className="btn btn-danger"
-                                            onClick={this.props.onLogout}>Logout
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
+            <div className="vh-100 d-flex flex-column" style={{backgroundColor: '#f5f5f5'}}>
+                <Navbar expand="lg" style={{backgroundColor:'#c8c8c8'}}>
+                    <Container>
+                        <Navbar.Brand href="#home"
+                                      onClick={() => this.handleNavigation(DASHBOARD_PAGE)}>
+                            <FontAwesomeIcon icon={faUtensils} className="text-secondary"></FontAwesomeIcon>
+                            <span className={"p-2"}>{APP_TITLE}</span>
+                        </Navbar.Brand>
+
+                        <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                        <Navbar.Collapse id="basic-navbar-nav">
+                            <Nav className="me-auto">
+                                <Nav.Link href="#menu" onClick={() => this.handleNavigation(MENU_PAGE)}>Menu</Nav.Link>
+                                <Nav.Link href="#table"
+                                          onClick={() => this.handleNavigation(TABLE_PAGE)}>Meja</Nav.Link>
+                            </Nav>
+                            <Button variant="light" onClick={this.props.onLogout}>
+                                <FontAwesomeIcon icon={faLock}/>
+                                <span className="ps-2">Keluar</span>
+                            </Button>
+                        </Navbar.Collapse>
+                    </Container>
+                </Navbar>
+                <div className="d-flex flex-column justify-content-between h-100">
+                    <div>
+                        {showMenu}
                     </div>
-                </nav>
-                {showMenu}
-            </>
+                    <div className="d-flex justify-content-center p-2">
+                        <small><FontAwesomeIcon icon={faCopyright}/> 2022 - EnigmaCamp</small>
+                    </div>
+                </div>
+            </div>
         );
     }
 }

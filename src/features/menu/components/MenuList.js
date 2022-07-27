@@ -1,5 +1,8 @@
 import {Component} from "react";
 import {menuService} from "../../../services/menuService";
+import {Button, Container, Table} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAdd} from "@fortawesome/free-solid-svg-icons";
 
 class MenuList extends Component {
     constructor(props) {
@@ -10,15 +13,20 @@ class MenuList extends Component {
     render() {
         const menus = this.menuService.showAll();
         return (
-            <div className="container">
-                <button type="button" className="btn btn-primary" onClick={this.props.onNavigateToForm}>Tambah Menu
-                </button>
-                <table className="table table-striped">
+            <Container className="p-3">
+                <div className="d-flex justify-content-between">
+                    <h3>Menu</h3>
+                    <Button size="sm" onClick={this.props.onNavigateToForm}>
+                        <FontAwesomeIcon icon={faAdd}/>
+                        <span className={"p-2"}>Tambah Menu</span>
+                    </Button>
+                </div>
+                <Table striped>
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Price</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Harga</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -27,13 +35,13 @@ class MenuList extends Component {
                             return <tr key={menu.id}>
                                 <th scope="row">{index + 1}</th>
                                 <td>{menu.name}</td>
-                                <td>{menu.price}</td>
+                                <td>{menu.price.toLocaleString()}</td>
                             </tr>
                         })
                     }
                     </tbody>
-                </table>
-            </div>
+                </Table>
+            </Container>
         );
     }
 }
