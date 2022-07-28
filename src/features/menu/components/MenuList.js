@@ -5,10 +5,19 @@ class MenuList extends Component {
     constructor(props) {
         super(props);
         this.menuService = menuService();
+        this.state = {
+            menus: []
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            menus: this.menuService.showAll()
+        })
     }
 
     render() {
-        const menus = this.menuService.showAll();
+        const {menus} = this.state;
         return (
             <div className="container">
                 <button type="button" className="btn btn-primary" onClick={this.props.onNavigateToForm}>Tambah Menu

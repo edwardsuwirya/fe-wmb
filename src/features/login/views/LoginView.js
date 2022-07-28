@@ -2,6 +2,7 @@ import {Component} from "react";
 import "./Login.css";
 import {EMAIL_REGEX} from "../../../shared/constants";
 import {userCredential} from "../../../model/userCredential";
+import AppInput from "../../../shared/components/AppInput";
 
 class LoginView extends Component {
     constructor(props) {
@@ -9,68 +10,70 @@ class LoginView extends Component {
         this.state = {
             username: "",
             password: "",
-            isValid: false,
-            userNameTouched: false,
-            passwordTouched: false,
+            isValidUserName: false,
+            isValidPassword: false,
             errorName: {email: '', password: ''}
         };
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleUsernameChange = this.handleUsernameChange.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    handleUsernameChange(event) {
-        const email = event.target.value;
-        if (email.match(EMAIL_REGEX)) {
-            this.setState({
-                username: email,
-                errorName: {...this.state.errorName, email: ''},
-                userNameTouched: true
-            }, this.validate);
-        } else {
-            this.setState({
-                errorName: {...this.state.errorName, email: 'Invalid email format'}
-            }, this.validate);
+    handleChange(key, value) {
+        switch (key) {
+            case "username":
+                this.setState({
+                    [key]: value
+                }, this.validateUserName);
+                break;
+            case "password":
+                this.setState({
+                    [key]: value
+                }, this.validatePassword);
+                break;
         }
-    };
-
-    handlePasswordChange(event) {
-        const userPassword = event.target.value;
-        if (userPassword.length > 5) {
-            this.setState({
-                password: userPassword,
-                errorName: {...this.state.errorName, password: ''},
-                passwordTouched: true
-            }, this.validate);
-        } else {
-            this.setState({
-                errorName: {...this.state.errorName, password: '6 min length'}
-            }, this.validate);
-        }
-    };
+    }
 
     handleSubmit(event) {
-        const {username, password} = this.state;
-        this.props.onLogin(userCredential(username, password));
-        event.preventDefault()
+        const {isValidUserName, isValidPassword} = this.state;
+        if (isValidUserName && isValidPassword) {
+            const {username, password} = this.state;
+            this.props.onLogin(userCredential(username, password));
+            event.preventDefault()
+        }
     };
 
-    validate() {
-        const {errorName, userNameTouched, passwordTouched} = this.state;
-        if (errorName.email.length > 0 || errorName.password.length > 0 ||
-            !userNameTouched || !passwordTouched) {
+    validatePassword() {
+        const {password} = this.state;
+        if (!(password.length > 5)) {
             this.setState({
-                isValid: false
-            })
+                errorName: {...this.state.errorName, password: '6 min length'},
+                isValidPassword: false
+            });
         } else {
             this.setState({
-                isValid: true
+                errorName: {...this.state.errorName, password: ''},
+                isValidPassword: true
+            })
+        }
+    }
+
+    validateUserName() {
+        const {username} = this.state;
+        if (!username.match(EMAIL_REGEX)) {
+            this.setState({
+                errorName: {...this.state.errorName, email: 'Invalid email format'},
+                isValidUserName: false
+            });
+        } else {
+            this.setState({
+                errorName: {...this.state.errorName, email: ''},
+                isValidUserName: true
             })
         }
     }
 
     render() {
-        const {errorName, isValid} = this.state;
+        const {errorName, isValidUserName, isValidPassword} = this.state;
         return (
             <div className="login main">
                 <form onSubmit={this.handleSubmit}>
@@ -79,38 +82,24 @@ class LoginView extends Component {
                             <div className="d-flex justify-content-end login containerEnd">
                                 <div className="card w-50 login backgroundColorCard">
                                     <div className="card-body">
-                                        <h2 className="login">
-                                            <i className="fas fa-unlock-alt"></i> Login Page
-                                        </h2>
+                                        <h2 className="login">Login Page</h2>
                                         <br/>
                                         <div>
                                             <div className={`form-group`}>
-                                                <label htmlFor="inputUserName">Email</label>
-                                                <input
-                                                    type="email"
-                                                    className="form-control"
-                                                    id="inputUserName"
-                                                    placeholder="Enter email"
-                                                    onChange={this.handleUsernameChange}
-                                                />
+                                                <AppInput id="username" label="User Name" placeholder='Masukan Email'
+                                                          onChange={this.handleChange}/>
                                                 <small className="text-danger">{errorName.email}</small>
                                             </div>
-                                            <label htmlFor="inputUserPassword">Password</label>
-                                            <input
-                                                type="password"
-                                                className="form-control"
-                                                id="inputUserPassword"
-                                                placeholder="Enter password"
-                                                onChange={this.handlePasswordChange}
-                                            />
-                                            <small className="text-danger">{errorName.password}</small>
-                                        </div>
-                                        <br></br>
-                                        <div>
+                                            <div className={`form-group`}>
+                                                <AppInput id="password" type='password' placeholder='Masukan Password'
+                                                          label="Password" onChange={this.handleChange}/>
+                                                <small className="text-danger">{errorName.password}</small>
+                                            </div>
+                                            <br></br>
                                             <button
                                                 type="submit"
-                                                className={`btn btn-primary login inputButtonawesome-button-sm`}
-                                                disabled={!isValid}
+                                                className={`btn btn-primary login`}
+                                                disabled={!(isValidUserName && isValidPassword)}
                                             >
                                                 <i className="fas fa-sign-in"></i> Login
                                             </button>

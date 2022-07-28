@@ -1,6 +1,9 @@
 import {Component} from "react";
 import {menuService} from "../../../services/menuService";
 import {menu} from "../../../model/menu";
+import AppInput from "../../../shared/components/AppInput";
+import AppSubmitButton from "../../../shared/components/AppSubmitButton";
+import AppCancelButton from "../../../shared/components/AppCancelButton";
 
 class MenuForm extends Component {
     constructor(props) {
@@ -12,27 +15,13 @@ class MenuForm extends Component {
             isValid: false
         };
         this.menuService = menuService();
-        this.handleChangeId = this.handleChangeId.bind(this);
-        this.handleChangeName = this.handleChangeName.bind(this);
-        this.handleChangePrice = this.handleChangePrice.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChangeId(e) {
+    handleChange(key, value) {
         this.setState({
-            id: e.target.value
-        }, this.validate)
-    }
-
-    handleChangeName(e) {
-        this.setState({
-            name: e.target.value,
-        }, this.validate)
-    }
-
-    handleChangePrice(e) {
-        this.setState({
-            price: e.target.value,
+            [key]: value
         }, this.validate)
     }
 
@@ -56,38 +45,13 @@ class MenuForm extends Component {
             <div className="container">
                 <form onSubmit={this.handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="inputId">Id Menu</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputId"
-                            placeholder="Enter Id"
-                            onChange={this.handleChangeId}
-                        />
-                        <label htmlFor="inputName">Name</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputName"
-                            placeholder="Enter Name"
-                            onChange={this.handleChangeName}
-                        />
-                        <label htmlFor="inputPrice">Price</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputPrice"
-                            placeholder="Enter Price"
-                            onChange={this.handleChangePrice}
-                        />
+                        <AppInput id="id" label="Id Menu" placeholder='Masukan Id' onChange={this.handleChange}/>
+                        <AppInput id="name" label="Nama" placeholder='Masukan Nama' onChange={this.handleChange}/>
+                        <AppInput id="price" label="Harga" placeholder='Masukan Harga' onChange={this.handleChange}/>
                     </div>
                     <br/>
-                    <button type="button" className="btn btn-warning" onClick={this.props.onCancelForm}>
-                        Cancel
-                    </button>
-                    <button disabled={!this.state.isValid} type="submit" className="btn btn-success">
-                        Submit
-                    </button>
+                    <AppCancelButton label='Cancel' onCancel={this.props.onCancelForm}/>
+                    <AppSubmitButton disabled={!this.state.isValid} label="Submit"/>
                 </form>
             </div>
         );

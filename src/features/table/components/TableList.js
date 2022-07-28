@@ -5,10 +5,20 @@ class TableList extends Component {
     constructor(props) {
         super(props);
         this.tableService = tableService();
+        this.state = {
+            tables: []
+        }
+
+    }
+
+    componentDidMount() {
+        this.setState({
+            tables: this.tableService.showAll()
+        });
     }
 
     render() {
-        const tables = this.tableService.showAll();
+        const {tables} = this.state;
         return (
             <div className="container">
                 <button type="button" className="btn btn-primary" onClick={this.props.onNavigateToForm}>Tambah Table

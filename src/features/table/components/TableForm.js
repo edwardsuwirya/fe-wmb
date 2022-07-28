@@ -1,6 +1,9 @@
 import {Component} from "react";
 import {tableService} from "../../../services/tableService";
 import {table} from "../../../model/table";
+import AppInput from "../../../shared/components/AppInput";
+import AppCancelButton from "../../../shared/components/AppCancelButton";
+import AppSubmitButton from "../../../shared/components/AppSubmitButton";
 
 class TableForm extends Component {
     constructor(props) {
@@ -12,27 +15,13 @@ class TableForm extends Component {
             isValid: false
         };
         this.tableService = tableService();
-        this.handleChangeId = this.handleChangeId.bind(this);
-        this.handleChangeNumber = this.handleChangeNumber.bind(this);
-        this.handleChangeStatus = this.handleChangeStatus.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChangeId(e) {
+    handleChange(key, value) {
         this.setState({
-            id: e.target.value,
-        }, this.validate)
-    }
-
-    handleChangeNumber(e) {
-        this.setState({
-            tableNumber: e.target.value,
-        }, this.validate)
-    }
-
-    handleChangeStatus(e) {
-        this.setState({
-            status: e.target.value,
+            [key]: value
         }, this.validate)
     }
 
@@ -55,39 +44,14 @@ class TableForm extends Component {
         return (
             <div className="container">
                 <form onSubmit={this.handleSubmit}>
-                    <div className="m-group">
-                        <label htmlFor="inputId">Id Table</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputId"
-                            placeholder="Enter Id"
-                            onChange={this.handleChangeId}
-                        />
-                        <label htmlFor="inputName">Number</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputName"
-                            placeholder="Enter Number"
-                            onChange={this.handleChangeNumber}
-                        />
-                        <label htmlFor="inputPrice">Status</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputPrice"
-                            placeholder="Enter Status"
-                            onChange={this.handleChangeStatus}
-                        />
+                    <div className="form-group">
+                        <AppInput id="id" label="Id Table" placeholder='Masukan Id' onChange={this.handleChange}/>
+                        <AppInput id="tableNumber" placeholder='Masukan Nomor' label="Nomor Meja" onChange={this.handleChange}/>
+                        <AppInput id="status" placeholder='Masukan Status' label="Status" onChange={this.handleChange}/>
                     </div>
                     <br/>
-                    <button type="button" className="btn btn-warning" onClick={this.props.onCancelForm}>
-                        Cancel
-                    </button>
-                    <button disabled={!this.state.isValid} type="submit" className="btn btn-success">
-                        Submit
-                    </button>
+                    <AppCancelButton label='Cancel' onCancel={this.props.onCancelForm}/>
+                    <AppSubmitButton disabled={!this.state.isValid} label="Submit"/>
                 </form>
             </div>
         );
