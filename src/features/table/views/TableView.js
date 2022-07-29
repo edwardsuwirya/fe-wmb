@@ -1,6 +1,7 @@
 import {Component} from "react";
 import TableForm from "../components/TableForm";
 import TableList from "../components/TableList";
+import {tableService} from "../../../services/tableService";
 
 class TableView extends Component {
     constructor(props) {
@@ -8,6 +9,7 @@ class TableView extends Component {
         this.state = {
             addedForm: false
         };
+        this.tableService = this.props.service;
     }
 
     navigateToForm = () => {
@@ -25,8 +27,8 @@ class TableView extends Component {
     render() {
         return (
             <>
-                {this.state.addedForm ? <TableForm onCancelForm={this.handleCancel}/> :
-                    <TableList onNavigateToForm={this.navigateToForm}/>}
+                {this.state.addedForm ? <TableForm service={this.tableService} onCancelForm={this.handleCancel}/> :
+                    <TableList service={this.tableService} onNavigateToForm={this.navigateToForm}/>}
             </>
         );
     }

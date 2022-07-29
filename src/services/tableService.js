@@ -13,7 +13,16 @@ export function tableService() {
     const addNewTable = function (newTable) {
         tables.push(newTable);
     }
+    const deleteTable = function (id) {
+        const newListTables = tables.filter(data => data.id !== id);
+        while (tables.length > 0) {
+            tables.pop();
+        }
+        for (let i = 0; i < newListTables.length; i++) {
+            tables.push(newListTables[i])
+        }
+    }
     return {
-        showAll, addNewTable
+        showAll, addNewTable, deleteTable
     }
 }

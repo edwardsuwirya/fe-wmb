@@ -1,7 +1,7 @@
 import {Component} from "react";
-import {menuService} from "../../../services/menuService";
 import {menu} from "../../../model/menu";
-import {Button, Card, Container, Form} from "react-bootstrap";
+import {FormInput} from "../../../shared/components/forms/FormInput";
+import {FormContainer} from "../../../shared/components/containers/FormContainer";
 
 class MenuForm extends Component {
     constructor(props) {
@@ -10,83 +10,92 @@ class MenuForm extends Component {
             id: '',
             name: '',
             price: '',
-            isValid: false
+            isValid: false,
+            error: {id: '', name: '', price: ''}
         };
-        this.menuService = menuService();
-        this.handleChangeId = this.handleChangeId.bind(this);
-        this.handleChangeName = this.handleChangeName.bind(this);
-        this.handleChangePrice = this.handleChangePrice.bind(this);
+        this.service = this.props.service;
+        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChangeId(e) {
+    handleChange(key, value) {
         this.setState({
-            id: e.target.value
-        }, this.validate)
-    }
-
-    handleChangeName(e) {
-        this.setState({
-            name: e.target.value,
-        }, this.validate)
-    }
-
-    handleChangePrice(e) {
-        this.setState({
-            price: e.target.value,
-        }, this.validate)
+            [key]: value
+        }, () => this.validate(key))
     }
 
     handleSubmit(e) {
         e.preventDefault();
         const {id, name, price} = this.state;
-        this.menuService.addNewMenu(menu(id, name, price));
+        this.service.addNewMenu(menu(id, name, price));
         this.props.onCancelForm();
     }
 
-    validate() {
-        if (this.state.id && this.state.name && this.state.price) {
-            this.setState({isValid: true})
-        } else {
-            this.setState({isValid: false})
+    validate(key) {
+        const {id, name, price, error} = this.state;
+        switch (key) {
+            case 'id':
+                if (!id) {
+                    this.setState({
+                        isValid: false,
+                        error: {...error, id: 'Informasi id dibutuhkan'},
+                    })
+                } else {
+                    this.setState({
+                        error: {...error, id: ''},
+                    })
+                }
+                break;
+            case 'name':
+                if (!name) {
+                    this.setState({
+                        isValid: false,
+                        error: {...error, name: 'Informasi nama dibutuhkan'},
+                    })
+                } else {
+                    this.setState({
+                        error: {...error, name: ''},
+                    })
+                }
+                break;
+            case 'price':
+                if (!price) {
+                    this.setState({
+                        isValid: false,
+                        error: {...error, price: 'Informasi harga dibutuhkan'},
+                    })
+                } else {
+                    this.setState({
+                        error: {...error, price: ''},
+                    })
+                }
+                break;
+        }
+        if (id && name && price) {
+            this.setState({
+                isValid: true,
+            })
         }
     }
 
     render() {
+        const {id, name, price, isValid} = this.state;
         return (
-            <Container className="p-2">
-                <Card>
-                    <Card.Body>
-                        <Card.Title>Tambah Menu</Card.Title>
-                        <Form onSubmit={this.handleSubmit}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>ID Menu</Form.Label>
-                                <Form.Control type="text" placeholder="Masukan ID menu"
-                                              onChange={this.handleChangeId}/>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Nama Menu</Form.Label>
-                                <Form.Control type="text" placeholder="Masukan nama menu"
-                                              onChange={this.handleChangeName}/>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Harga</Form.Label>
-                                <Form.Control type="text" placeholder="Masukan harga menu"
-                                              onChange={this.handleChangePrice}/>
-                            </Form.Group>
-                            <div>
-                                <Button className={"w-25 m-1"} variant="warning" type="button"
-                                        onClick={this.props.onCancelForm}>Batal</Button>
-                                <Button className={"w-25 m-1"} type="submit" variant="primary"
-                                        disabled={!this.state.isValid}>
-                                    Simpan
-                                </Button>
-                            </div>
-                        </Form>
-                    </Card.Body>
-                </Card>
-
-            </Container>
+            <FormContainer title='Tambah Menu' onCancel={this.props.onCancelForm} onSubmit={this.handleSubmit}
+                           isValid={isValid}>
+                <FormInput id='id' label='ID Menu' errorMessage={this.state.error.id} placeholder='Masukan ID Menu'
+                           value={id}
+                           onChange={this.handleChange}/>
+                <FormInput id='name' label='Nama Menu' errorMessage={this.state.error.name}
+                           value={name}
+                           placeholder='Masukan nama menu'
+                           onChange={this.handleChange}/>
+                <FormInput id='price' label='Harga' errorMessage={this.state.error.price}
+                           isNumber={true}
+                           value={price}
+                           placeholder='Masukan harga menu'
+                           onChange={this.handleChange}/>
+            </FormContainer>
         );
     }
 }

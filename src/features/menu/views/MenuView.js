@@ -8,6 +8,7 @@ class MenuView extends Component {
         this.state = {
             addedForm: false
         };
+        this.menuService = this.props.service;
     }
 
     navigateToForm = () => {
@@ -25,8 +26,8 @@ class MenuView extends Component {
     render() {
         return (
             <>
-                {this.state.addedForm ? <MenuForm onCancelForm={this.handleCancel}/> :
-                    <MenuList onNavigateToForm={this.navigateToForm}/>}
+                {this.state.addedForm ? <MenuForm service={this.menuService} onCancelForm={this.handleCancel}/> :
+                    <MenuList service={this.menuService} onNavigateToForm={this.navigateToForm}/>}
             </>
         );
     }

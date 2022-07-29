@@ -13,7 +13,16 @@ export function menuService() {
     const addNewMenu = function (newMenu) {
         menus.push(newMenu);
     }
+    const deleteMenu = function (id) {
+        const newListMenus = menus.filter(data => data.id !== id);
+        while (menus.length > 0) {
+            menus.pop();
+        }
+        for (let i = 0; i < newListMenus.length; i++) {
+            menus.push(newListMenus[i])
+        }
+    }
     return {
-        showAll, addNewMenu
+        showAll, addNewMenu, deleteMenu
     }
 }

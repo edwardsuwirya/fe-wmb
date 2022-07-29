@@ -13,11 +13,13 @@ class LoginView extends Component {
             isValid: false,
             userNameTouched: false,
             passwordTouched: false,
-            errorName: {email: '', password: ''}
+            error: {email: '', password: ''}
         };
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.service = props.service;
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.clearForm = this.clearForm.bind(this);
     }
 
     handleUsernameChange(event) {
@@ -25,12 +27,13 @@ class LoginView extends Component {
         if (email.match(EMAIL_REGEX)) {
             this.setState({
                 username: email,
-                errorName: {...this.state.errorName, email: ''},
+                error: {...this.state.error, email: ''},
                 userNameTouched: true
             }, this.validate);
         } else {
             this.setState({
-                errorName: {...this.state.errorName, email: 'Invalid email format'}
+                username: email,
+                error: {...this.state.error, email: 'Invalid email format'}
             }, this.validate);
         }
     };
@@ -40,25 +43,40 @@ class LoginView extends Component {
         if (userPassword.length > 5) {
             this.setState({
                 password: userPassword,
-                errorName: {...this.state.errorName, password: ''},
+                error: {...this.state.error, password: ''},
                 passwordTouched: true
             }, this.validate);
         } else {
             this.setState({
-                errorName: {...this.state.errorName, password: '6 min length'}
+                password: userPassword,
+                error: {...this.state.error, password: '6 min length'}
             }, this.validate);
         }
     };
 
     handleSubmit(event) {
         const {username, password} = this.state;
-        this.props.onLogin(userCredential(username, password));
+        if (this.service.authenticate(userCredential(username, password))) {
+            this.props.handleLoggedIn(true)
+        } else {
+            alert("Incorrect email or password");
+            this.clearForm();
+        }
         event.preventDefault()
     };
 
+    clearForm() {
+        this.setState({
+            username: "",
+            password: "",
+            isValid: false,
+            error: {email: '', password: ''}
+        });
+    }
+
     validate() {
-        const {errorName, userNameTouched, passwordTouched} = this.state;
-        if (errorName.email.length > 0 || errorName.password.length > 0 ||
+        const {error, userNameTouched, passwordTouched} = this.state;
+        if (error.email.length > 0 || error.password.length > 0 ||
             !userNameTouched || !passwordTouched) {
             this.setState({
                 isValid: false
@@ -71,7 +89,7 @@ class LoginView extends Component {
     }
 
     render() {
-        const {errorName, isValid} = this.state;
+        const {username, password, error, isValid} = this.state;
         return (
             <div className="login main d-flex flex-column justify-content-center">
                 <Container>
@@ -85,20 +103,24 @@ class LoginView extends Component {
                                     <Form onSubmit={this.handleSubmit}>
                                         <Form.Group className="form-floating mb-3">
                                             <FloatingLabel label='Email'>
-                                                <Form.Control size="lg" type="email" placeholder="Masukan email"
+                                                <Form.Control size="lg" type="email"
+                                                              placeholder="Masukan email"
+                                                              value={username}
                                                               onChange={this.handleUsernameChange}/>
                                             </FloatingLabel>
                                             <Form.Text className="text-danger">
-                                                {errorName.email}
+                                                {error.email}
                                             </Form.Text>
                                         </Form.Group>
                                         <Form.Group className="form-floating mb-3">
                                             <FloatingLabel label='Password'>
-                                                <Form.Control size="lg" type="password" placeholder="Masukan Password"
+                                                <Form.Control size="lg" type="password"
+                                                              placeholder="Masukan Password"
+                                                              value={password}
                                                               onChange={this.handlePasswordChange}/>
                                             </FloatingLabel>
                                             <Form.Text className="text-danger">
-                                                {errorName.password}
+                                                {error.password}
                                             </Form.Text>
                                         </Form.Group>
                                         <div className="d-grid">

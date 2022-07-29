@@ -1,7 +1,8 @@
 import {Component} from "react";
-import {tableService} from "../../../services/tableService";
 import {table} from "../../../model/table";
-import {Button, Card, Container, Form} from "react-bootstrap";
+import {FormContainer} from "../../../shared/components/containers/FormContainer";
+import {FormInput} from "../../../shared/components/forms/FormInput";
+import {FormRadio} from "../../../shared/components/forms/FormRadio";
 
 class TableForm extends Component {
     constructor(props) {
@@ -10,95 +11,89 @@ class TableForm extends Component {
             id: '',
             tableNumber: '',
             status: '',
-            isValid: false
+            isValid: false,
+            error: {id: '', tableNumber: '', status: ''}
         };
-        this.tableService = tableService();
-        this.handleChangeId = this.handleChangeId.bind(this);
-        this.handleChangeNumber = this.handleChangeNumber.bind(this);
-        this.handleChangeStatus = this.handleChangeStatus.bind(this);
+        this.service = this.props.service;
+        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChangeId(e) {
+    handleChange(key, value) {
         this.setState({
-            id: e.target.value,
-        }, this.validate)
+            [key]: value
+        }, () => this.validate(key))
     }
 
-    handleChangeNumber(e) {
-        this.setState({
-            tableNumber: e.target.value,
-        }, this.validate)
-    }
-
-    handleChangeStatus(e) {
-        this.setState({
-            status: e.target.value,
-        }, this.validate)
-    }
-
-    validate() {
-        if (this.state.id && this.state.tableNumber && this.state.status) {
-            this.setState({isValid: true})
-        } else {
-            this.setState({isValid: false})
+    validate(key) {
+        const {id, tableNumber, status, error} = this.state;
+        switch (key) {
+            case 'id':
+                if (!id) {
+                    this.setState({
+                        isValid: false,
+                        error: {...error, id: 'Informasi id dibutuhkan'},
+                    })
+                } else {
+                    this.setState({
+                        error: {...error, id: ''},
+                    })
+                }
+                break;
+            case 'tableNumber':
+                if (!tableNumber) {
+                    this.setState({
+                        isValid: false,
+                        error: {...error, tableNumber: 'Informasi nomor meja dibutuhkan'},
+                    })
+                } else {
+                    this.setState({
+                        error: {...error, tableNumber: ''},
+                    })
+                }
+                break;
+            case 'status':
+                if (!status) {
+                    this.setState({
+                        isValid: false,
+                        error: {...error, status: 'Informasi status dibutuhkan'},
+                    })
+                } else {
+                    this.setState({
+                        error: {...error, status: ''},
+                    })
+                }
+                break;
+        }
+        if (id && tableNumber && status) {
+            this.setState({
+                isValid: true,
+            })
         }
     }
 
     handleSubmit(e) {
         e.preventDefault();
         const {id, tableNumber, status} = this.state;
-        this.tableService.addNewTable(table(id, tableNumber, status));
+        this.service.addNewTable(table(id, tableNumber, status));
         this.props.onCancelForm();
     }
 
     render() {
+        const {id, tableNumber, status, isValid} = this.state;
         return (
-            <Container className="p-2">
-                <Card>
-                    <Card.Body>
-                        <Card.Title>Tambah Meja</Card.Title>
-                        <Form onSubmit={this.handleSubmit}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>ID Meja</Form.Label>
-                                <Form.Control type="text" placeholder="Masukan ID meja"
-                                              onChange={this.handleChangeId}/>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Nomor Meja</Form.Label>
-                                <Form.Control type="text" placeholder="Masukan nomor meja"
-                                              onChange={this.handleChangeNumber}/>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Nomor Meja</Form.Label>
-                                <Form.Check
-                                    type='radio'
-                                    name="status"
-                                    label='Available'
-                                    value='A'
-                                    onChange={this.handleChangeStatus}
-                                />
-                                <Form.Check
-                                    type='radio'
-                                    name="status"
-                                    label='Unavailable'
-                                    value='U'
-                                    onChange={this.handleChangeStatus}
-                                />
-                            </Form.Group>
-                            <div>
-                                <Button className={"w-25 m-1"} variant="warning" type="button"
-                                        onClick={this.props.onCancelForm}>Batal</Button>
-                                <Button className={"w-25 m-1"} type="submit" variant="primary"
-                                        disabled={!this.state.isValid}>
-                                    Simpan
-                                </Button>
-                            </div>
-                        </Form>
-                    </Card.Body>
-                </Card>
-
-            </Container>
+            <FormContainer title='Tambah Meja' onCancel={this.props.onCancelForm} onSubmit={this.handleSubmit}
+                           isValid={isValid}>
+                <FormInput id='id' label='ID Meja' errorMessage={this.state.error.id} placeholder='Masukan ID Meja'
+                           value={id}
+                           onChange={this.handleChange}/>
+                <FormInput id='tableNumber' label='Nomor Meja' errorMessage={this.state.error.tableNumber}
+                           placeholder='Masukan nomor meja'
+                           value={tableNumber}
+                           onChange={this.handleChange}/>
+                <FormRadio id='status' title='Status' labels={{'A': 'Available', 'U': 'Unavailable'}}
+                           onChange={this.handleChange} value={status}/>
+            </FormContainer>
         );
     }
 }
