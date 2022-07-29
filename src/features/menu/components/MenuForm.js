@@ -9,7 +9,7 @@ class MenuForm extends Component {
         this.state = {
             id: '',
             name: '',
-            price: '',
+            price: 0,
             isValid: false,
             error: {id: '', name: '', price: ''}
         };
