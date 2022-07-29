@@ -70,6 +70,7 @@ class MenuForm extends Component {
                     })
                 }
                 break;
+            default:
         }
         if (id && name && price) {
             this.setState({

@@ -64,6 +64,7 @@ class TableForm extends Component {
                     })
                 }
                 break;
+            default:
         }
         if (id && tableNumber && status) {
             this.setState({

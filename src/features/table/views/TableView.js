@@ -1,7 +1,6 @@
 import {Component} from "react";
 import TableForm from "../components/TableForm";
 import TableList from "../components/TableList";
-import {tableService} from "../../../services/tableService";
 
 class TableView extends Component {
     constructor(props) {
