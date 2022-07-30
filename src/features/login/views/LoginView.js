@@ -6,6 +6,7 @@ import {Button, Card, Col, Container, FloatingLabel, Form, Row} from "react-boot
 import {withLoading} from "../../../shared/hoc/withLoading";
 import {withMessageBox} from "../../../shared/hoc/withMessageBox";
 import {compose} from "ramda";
+import {withUIState} from "../../../shared/hoc/withUIState";
 
 class LoginView extends Component {
     constructor(props) {
@@ -59,20 +60,15 @@ class LoginView extends Component {
 
     async handleSubmit(event) {
         event.preventDefault();
-        this.props.handleShowLoading(true);
-        try {
+        const result = await this.props.handleFetch(async () => {
             const {username, password} = this.state;
             const response = await this.service.authenticate(userCredential(username, password));
-            if (response) {
-                this.props.handleLoggedIn(true)
-            }
-        } catch (e) {
-            this.props.handleShowMessage('error', 'Invalid Login');
-            this.clearForm();
-        } finally {
-            this.props.handleShowLoading(false);
+            return response
+        });
+        if (result) {
+            this.props.handleLoggedIn(true)
         }
-
+        this.clearForm();
     };
 
     clearForm() {
@@ -148,4 +144,5 @@ class LoginView extends Component {
     }
 }
 
-export default compose(withLoading, withMessageBox)(LoginView);
+// export default compose(withLoading, withMessageBox)(LoginView);
+export default withUIState(LoginView)
