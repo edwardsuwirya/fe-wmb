@@ -2,6 +2,7 @@ import {Component} from "react";
 import {menu} from "../../../model/menu";
 import {FormInput} from "../../../shared/components/forms/FormInput";
 import {FormContainer} from "../../../shared/components/containers/FormContainer";
+import {withLoading} from "../../../shared/hoc/withLoading";
 
 class MenuForm extends Component {
     constructor(props) {
@@ -24,11 +25,19 @@ class MenuForm extends Component {
         }, () => this.validate(key))
     }
 
-    handleSubmit(e) {
+    async handleSubmit(e) {
         e.preventDefault();
-        const {id, name, price} = this.state;
-        this.service.addNewMenu(menu(id, name, price));
-        this.props.onCancelForm();
+        this.props.handleShowLoading(true);
+        try {
+            const {id, name, price} = this.state;
+            const result = await this.service.addNewMenu(menu(id, name, price));
+            this.props.handleShowLoading(false);
+            alert(`Successfully add ${result.name}`);
+            this.props.onCancelForm();
+        } catch (e) {
+            this.props.handleShowLoading(false);
+            alert('oops');
+        }
     }
 
     validate(key) {
@@ -101,4 +110,4 @@ class MenuForm extends Component {
     }
 }
 
-export default MenuForm;
+export default withLoading(MenuForm);

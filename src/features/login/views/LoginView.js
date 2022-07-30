@@ -3,6 +3,9 @@ import "./Login.css";
 import {EMAIL_REGEX} from "../../../shared/constants";
 import {userCredential} from "../../../model/userCredential";
 import {Button, Card, Col, Container, FloatingLabel, Form, Row} from "react-bootstrap";
+import {withLoading} from "../../../shared/hoc/withLoading";
+import {withMessageBox} from "../../../shared/hoc/withMessageBox";
+import {compose} from "ramda";
 
 class LoginView extends Component {
     constructor(props) {
@@ -54,15 +57,22 @@ class LoginView extends Component {
         }
     };
 
-    handleSubmit(event) {
-        const {username, password} = this.state;
-        if (this.service.authenticate(userCredential(username, password))) {
-            this.props.handleLoggedIn(true)
-        } else {
-            alert("Incorrect email or password");
+    async handleSubmit(event) {
+        event.preventDefault();
+        this.props.handleShowLoading(true);
+        try {
+            const {username, password} = this.state;
+            const response = await this.service.authenticate(userCredential(username, password));
+            if (response) {
+                this.props.handleLoggedIn(true)
+            }
+        } catch (e) {
+            this.props.handleShowMessage('error', 'Invalid Login');
             this.clearForm();
+        } finally {
+            this.props.handleShowLoading(false);
         }
-        event.preventDefault()
+
     };
 
     clearForm() {
@@ -138,4 +148,4 @@ class LoginView extends Component {
     }
 }
 
-export default LoginView;
+export default compose(withLoading, withMessageBox)(LoginView);

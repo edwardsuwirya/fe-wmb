@@ -4,6 +4,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAdd} from "@fortawesome/free-solid-svg-icons";
 import {CommonContainer} from "../../../shared/components/containers/CommonContainer";
 import {faEraser} from "@fortawesome/free-solid-svg-icons/faEraser";
+import {withLoading} from "../../../shared/hoc/withLoading";
+import {withMessageBox} from "../../../shared/hoc/withMessageBox";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {compose} from "ramda";
 
 class MenuList extends Component {
     constructor(props) {
@@ -16,31 +20,53 @@ class MenuList extends Component {
     }
 
     componentDidMount() {
-        this.setState({
-            menus: this.service.showAll()
-        })
+        this.getAllMenu();
     }
 
-    handleDelete(id) {
+    async getAllMenu() {
+        this.props.handleShowLoading(true);
+        try {
+            const menus = await this.service.showAll()
+            this.setState({
+                menus: menus
+            })
+            this.props.handleShowLoading(false);
+        } catch (e) {
+            this.props.handleShowLoading(false);
+            this.props.handleShowMessage('error', 'Maaf terjadi kesalahan sistem');
+        }
+    }
+
+    async handleDelete(id) {
         const result = window.confirm('Are you sure want to delete ?');
         if (result) {
-            this.service.deleteMenu(id);
-            this.setState({
-                menus: this.service.showAll()
-            })
+            this.props.handleShowLoading(true);
+            try {
+                await this.service.deleteMenu(id);
+                await this.getAllMenu();
+                this.props.handleShowLoading(false);
+            } catch (e) {
+                this.props.handleShowLoading(false);
+                this.props.handleShowMessage('error', 'Maaf terjadi kesalahan sistem');
+            }
         }
     }
 
     render() {
         return (
             <CommonContainer title='Menu'>
-                <>
+                <div className="buttongroup-container">
+                    <Button size="sm" style={{textDecoration: "none"}} variant={"link"}
+                            onClick={() => this.getAllMenu()}>
+                        <FontAwesomeIcon icon={faRefresh}/>
+                        <span className="p-2">Refresh</span>
+                    </Button>
                     <Button size="sm" style={{textDecoration: "none"}} variant={"link"}
                             onClick={this.props.onNavigateToForm}>
                         <FontAwesomeIcon icon={faAdd}/>
                         <span className="p-2">Tambah Menu</span>
                     </Button>
-                </>
+                </div>
                 <>
                     <Table striped>
                         <thead>
@@ -75,4 +101,4 @@ class MenuList extends Component {
     }
 }
 
-export default MenuList;
+export default compose(withLoading, withMessageBox)(MenuList);
